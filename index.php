@@ -26,7 +26,7 @@ $ads = [
     [
         'title' => 'Крепления Union Contact Pro 2015 года размер L/XL',
         'category' => $categories['binding'],
-        'price' => 800,
+        'price' => 8000,
         'img' => 'img/lot-3.jpg'
     ],
     [
