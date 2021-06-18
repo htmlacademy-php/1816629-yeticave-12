@@ -1,8 +1,5 @@
 <?php
 $is_auth = rand(0, 1);
-
-$title = 'Главная';
-
 $user_name = 'Настя';
 $categories = [
     'boards' => 'Доски и лыжи',
