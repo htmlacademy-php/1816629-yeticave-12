@@ -3,7 +3,9 @@ require('helpers.php');
 require('function.php');
 require('data.php');
 
-$page_content = include_template('main.php', ['categories' => $categories, 'ads' => $ads]);
+$page_content = include_template('main.php', [
+    'categories' => $categories,
+    'ads' => $ads]);
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
