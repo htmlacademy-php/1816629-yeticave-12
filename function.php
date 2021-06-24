@@ -16,10 +16,10 @@ function price_format($number) {
  * @param $data дата окончания публикации
  * @return array часы и минуты до  окончания публикации
  */
-function get_data_range($data){
-    $data_now = date_create("now");
-    $data_end = date_create($data);
-    $diff = date_diff($data_now, $data_end);
+function get_data_range($date){
+    $date_now = date_create("now");
+    $date_end = date_create($date);
+    $diff = date_diff($date_now, $date_end);
     $days_count = date_interval_format($diff, "%a");
     $hours_count = date_interval_format($diff, "%h");
     $all_hourse = $days_count * 24 + $hours_count;

@@ -28,7 +28,7 @@
                             <span class="lot__amount">Стартовая цена</span>
                             <span class="lot__cost"><?= price_format($ad['price']); ?></span>
                         </div>
-                        <div class="lot__timer timer">
+                        <div class="lot__timer timer<?= ($res[0] < 1) ? 'timer--finishing': '' ?> ">
                             <?= implode(' : ', $res);?>
                         </div>
                     </div>
