@@ -15,7 +15,7 @@
     </div>
     <ul class="lots__list">
         <?php foreach ($ads as $ad): ?>
-            <?php $res = get_data_range($ad['data_end']); ?>
+            <?php $res = get_data_range($ad['date_end']); ?>
             <li class="lots__item lot">
                 <div class="lot__image">
                     <img src="<?=$ad['img']; ?>" width="350" height="260" alt="">
@@ -28,7 +28,7 @@
                             <span class="lot__amount">Стартовая цена</span>
                             <span class="lot__cost"><?= price_format($ad['price']); ?></span>
                         </div>
-                        <div class="lot__timer timer">
+                        <div class="lot__timer timer<?= ($res[0] < 1) ? 'timer--finishing': '' ?> ">
                             <?= implode(' : ', $res);?>
                         </div>
                     </div>
