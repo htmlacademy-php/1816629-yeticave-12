@@ -7,21 +7,22 @@ USE yeticave;
 
 CREATE TABLE categories (
                             id INT AUTO_INCREMENT PRIMARY KEY,
-                            code VARCHAR(128) NOT NULL UNIQUE
+                            name VARCHAR(128) UNIQUE NOT NULL,
+                            code VARCHAR(128) UNIQUE NOT NULL
 );
 
 CREATE TABLE users (
                        id INT AUTO_INCREMENT PRIMARY KEY,
                        date_registration DATETIME DEFAULT CURRENT_TIMESTAMP,
-                       email CHAR UNIQUE NOT NULL,
-                       name CHAR NOT NULL,
-                       password CHAR NOT NULL,
-                       contacts CHAR
+                       email VARCHAR(128) UNIQUE NOT NULL,
+                       name VARCHAR(128) NOT NULL,
+                       password VARCHAR(128) NOT NULL,
+                       contacts VARCHAR(128)
 );
 
 CREATE TABLE ads (
                      id INT AUTO_INCREMENT PRIMARY KEY,
-                     name VARCHAR NOT NULL UNIQUE,
+                     name VARCHAR(128) NOT NULL UNIQUE,
                      description TEXT,
                      img TEXT,
                      start_price INT NOT NULL,
