@@ -7,7 +7,8 @@ USE yeticave;
 
 CREATE TABLE categories (
                             id INT AUTO_INCREMENT PRIMARY KEY,
-                            code VARCHAR(128) NOT NULL UNIQUE
+                            name VARCHAR(128) UNIQUE NOT NULL,
+                            code VARCHAR(128) UNIQUE NOT NULL
 );
 
 CREATE TABLE users (
