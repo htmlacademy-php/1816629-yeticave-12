@@ -3,7 +3,7 @@ require('helpers.php');
 require('function.php');
 require('data.php');
 
-require_once 'init.php';
+require('init.php');
 require('models.php');
 
 
