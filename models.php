@@ -34,14 +34,15 @@ FROM ads AS a
 }
 
 function get_lot ($link, $lot_id) {
-    $sql_lot = 'SELECT a.*, c.name AS categories, IFNULL(max_bet, a.start_price) AS price
+    $sql_lot = 'SELECT a.*, c.name AS categories, IFNULL((SELECT price as max_bet
+                                          FROM bets
+                                          WHERE ad_id = a.id
+                                          ORDER BY price DESC
+                                          LIMIT 1
+                                         ), a.start_price) AS price
 FROM ads AS a
          INNER JOIN categories AS c ON c.id = a.category_id
-         LEFT JOIN (SELECT ad_id, MAX(price) as max_bet
-                    FROM bets
-                    GROUP BY ad_id) b ON b.ad_id = a.id
-WHERE a.id = ?
-GROUP BY a.id; ';
+WHERE a.id = ?';
 
     $stmt = db_get_prepare_stmt($link, $sql_lot, $data = [$lot_id]);
     mysqli_stmt_execute($stmt);
