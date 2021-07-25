@@ -1,10 +1,10 @@
 <?php
-require('helpers.php');
-require('function.php');
-require('data.php');
+require_once 'helpers.php';
+require_once 'function.php';
+require_once 'data.php';
 
-require('init.php');
-require('models.php');
+require_once 'init.php';
+require_once 'models.php';
 
 
 if (!$link) {
