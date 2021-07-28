@@ -20,10 +20,8 @@ function get_catigories ($link) {
  * @return array массив актуальных объявлений
  */
 function get_ads ($link) {
-    $sql_ads = 'SELECT a.id, a.name, a.start_price, a.img, a.date_end, c.name AS category, IFNULL(MAX(b.price), a.start_price) AS price
+    $sql_ads = 'SELECT a.id, a.name, a.start_price, a.img, a.date_end, a.category_id, a.start_price
 FROM ads AS a
-        INNER JOIN categories AS c ON c.id = a.category_id
-        LEFT JOIN bets AS b ON b.ad_id = a.id
         WHERE a.date_end > NOW()
         GROUP BY a.id; ';
 
