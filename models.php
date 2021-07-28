@@ -6,7 +6,7 @@
  * @return array массив категорий
  */
 function get_catigories ($link) {
-    $sql_catigories = 'SELECT `name`, `code` FROM categories';
+    $sql_catigories = 'SELECT id, `name`, `code` FROM categories';
     $stmt = db_get_prepare_stmt($link, $sql_catigories);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
