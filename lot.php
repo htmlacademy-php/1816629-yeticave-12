@@ -1,10 +1,10 @@
 <?php
-require('helpers.php');
-require('function.php');
-require('data.php');
+require_once 'helpers.php';
+require_once 'function.php';
+require_once 'data.php';
 
-require('init.php');
-require('models.php');
+require_once 'init.php';
+require_once 'models.php';
 
 
 if (!$link) {
@@ -13,21 +13,25 @@ if (!$link) {
 }
 else {
     $lot_id = filter_input(INPUT_GET, 'id');
+    $categories = get_catigories($link);
     if(!$lot_id) {
-        $categories = get_catigories($link);
         $page_content = include_template('404.php', [
             'categories' => $categories]);
     } else {
-        $lot = get_lot($link, $lot_id);
-        $categories = get_catigories($link);
-        $lot['min_price'] = $lot['step_bet'] + ($lot['price']);
-
-        $page_content = include_template('lot.php', [
-            'categories' => $categories,
-            'lot' => $lot
-        ]);
+        $lots = get_ads($link);
+        $lot_in_lots = in_array($lot_id, array_column($lots, 'id'));
+        if (!$lot_in_lots) {
+            $page_content = include_template('404.php', [
+                'categories' => $categories]);
+        } else {
+            $lot = get_lot($link, $lot_id);
+            $lot['min_price'] = $lot['step_bet'] + $lot['price'];
+            $page_content = include_template('lot.php', [
+                'categories' => $categories,
+                'lot' => $lot
+            ]);
+        }
     }
-
 }
 
 
