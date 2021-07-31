@@ -16,9 +16,11 @@ else {
     $ads = get_ads($link);
 }
 
+$menu = include_template('menu.php', [
+    'categories' => $categories]);
 
 $page_content = include_template('add-lot.php', [
-    'categories' => $categories]);
+    'menu' => $menu]);
 
 $errors = [];
 
@@ -90,10 +92,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $page_content = include_template('add-lot.php', [
-        'categories' => $categories,
-        'errors' => $errors]);
+    $menu = include_template('menu.php', [
+        'categories' => $categories]);
 
+    $page_content = include_template('add-lot.php', [
+        'errors' => $errors,
+        '$menu' => $menu]);
 }
 
 $layout_content = include_template('layout.php', [

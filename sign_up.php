@@ -49,9 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 }
 
+$menu = include_template('menu.php', [
+    'categories' => $categories]);
 
 $page_content = include_template('sign_up.php', [
-    'categories' => $categories,
+    'menu' => $menu,
     'errors' => $errors]);
 
 $layout_content = include_template('layout.php', [

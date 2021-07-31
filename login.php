@@ -15,9 +15,11 @@ else {
     $categories = get_catigories($link);
 }
 
+$menu = include_template('menu.php', [
+    'categories' => $categories]);
 
 $page_content = include_template('login.php', [
-    'categories' => $categories]);
+    'menu' => $menu]);
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
