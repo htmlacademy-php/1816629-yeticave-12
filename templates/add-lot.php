@@ -26,7 +26,7 @@
 
                 <?php foreach ($categories as $category): ?>
                     <option id="<?= $category['id']; ?>" value="<?= $category['id']; ?>"
-                        <?= $category['id'] == get_post_val('category') ? 'selected' : ''; ?>>
+                        <?= $category['id'] === get_post_val('category') ? 'selected' : ''; ?>>
                         <?= $category['name']; ?>
                     </option>
                 <?php endforeach; ?>

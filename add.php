@@ -28,8 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $ad = $_POST;
     $adf = $_FILES;
-    //var_dump($ad);
-    //var_dump($adf);
 
     $ad = [
         'lot-name' => $_POST['lot-name'],
