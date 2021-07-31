@@ -92,3 +92,51 @@ function get_post_val($name)
 {
     return filter_input(INPUT_POST, $name);
 }
+
+/** Функция проверки email
+ * @param $date
+ * @return string
+ */
+function validate_email ($value, $link) {
+
+    if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        return $errors['email'] = "Введите корректный email";
+    } else {
+        $sql = 'SELECT id
+                FROM users
+                WHERE email = ?';
+
+        $stmt = db_get_prepare_stmt($link, $sql, [$value]);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $user_id = mysqli_fetch_assoc($res);
+
+        if ($user_id > 0) {
+            return $errors['email'] = "Пользователь с этим email уже зарегистрирован";
+        }
+    }
+}
+
+/** Валидация формы
+ * @param $form
+ * @param $rules
+ * @param $required
+ * @return array
+ */
+function form_validation($form, $rules, $required)
+{
+    $errors = [];
+    foreach ($form as $key => $value) {
+        if (in_array($key, $required) && empty($value)) {
+            $errors[$key] = "Заполните это поле";
+        } elseif (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $validationResult = $rule($value);
+            if ($validationResult) {
+                $errors[$key] = $validationResult;
+            }
+        }
+    }
+
+    return $errors;
+}
