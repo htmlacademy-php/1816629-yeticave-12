@@ -77,11 +77,19 @@ function validate_category_id($id, $category)
  * @return string
  */
 function validate_file($file) {
+    $info = new SplFileInfo($file['name']);
+    $info_file = mb_strtolower($info->getExtension());
 
-    $mimetype = mime_content_type($file['tmp_name']);
-    if (!(in_array($mimetype, ['image/jpeg', 'image/png']))) {
+    if (!in_array($info_file, ['jpeg', 'jpg', 'png'])) {
         return $errors['lot-img'] = 'Загрузите картинку в формате JPG, JPEG или PNG';
+    } else {
+        $mimetype = mime_content_type($file['tmp_name']);
+        if (!(in_array($mimetype, ['image/jpeg', 'image/png']))) {
+            return $errors['lot-img'] = 'Загрузите картинку в формате JPG, JPEG или PNG';
+        }
     }
+
+
 }
 
 /**
