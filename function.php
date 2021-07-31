@@ -29,8 +29,8 @@ function get_data_range($date){
 }
 
 /** Функция проверки, что начальная цена - число больше нуля.
- * @param $value
- * @return string|null
+ * @param $value цена
+ * @return string|null ошибка
  */
 function validate_price($value) {
     if (!is_double($value) || $value <= 0) {
@@ -39,8 +39,8 @@ function validate_price($value) {
 }
 
 /** Функция проверки, что шаг ставки - целое число больше 0.
- * @param $value
- * @return string
+ * @param $value число
+ * @return string ошибка
  */
 function validate_step_rate($value) {
     if (!is_int($value) || $value <= 0) {
@@ -49,32 +49,29 @@ function validate_step_rate($value) {
 }
 
 /** Функция проверки, что переданная дату завершения больше текущей даты на один день.
- * @param $date
- * @return string
+ * @param $date дата
+ * @return string ошибка
  */
-function validate_current_date($date)
-{
-
+function validate_current_date($date){
     if (is_date_valid($date) && get_data_range($date)[0] < "24" || strtotime($date) < strtotime("today")) {
         return "Дата должна быть больше текущей даты хотя бы на 1 день.";
     }
 }
 
 /** Функция проверки выбрана ли категория лота из списка.
- * @param $id
- * @param $category_list
- * @return string
+ * @param $id id выбранной категории
+ * @param $category массмв категорий
+ * @return string ошибка
  */
-function validate_category_id($id, $category)
-{
+function validate_category_id($id, $category){
     if (!in_array($id, $category)) {
         return "Выберите категорию из списка";
     }
 }
 
 /** Проверяет расширение загруженного файла.
- * @param $file
- * @return string
+ * @param $file загруженный файл
+ * @return string ошибка
  */
 function validate_file($file) {
     $info = new SplFileInfo($file['name']);
@@ -96,17 +93,16 @@ function validate_file($file) {
  * @param string $value значение глобального супермассива POST по ключу
  * @return string если true - возвращает значение глобального массива Post по ключу. если false - пустую строку
  */
-function get_post_val($name)
-{
+function get_post_val($name) {
     return filter_input(INPUT_POST, $name);
 }
 
 /** Функция проверки email
- * @param $date
- * @return string
+ * @param $value введенный email
+ * @param $link подключение к бд
+ * @return string ошибка
  */
 function validate_email ($value, $link) {
-
     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
         return $errors['email'] = "Введите корректный email";
     } else {
@@ -125,14 +121,13 @@ function validate_email ($value, $link) {
     }
 }
 
-/** Валидация формы
- * @param $form
- * @param $rules
- * @param $required
- * @return array
+/** Функция валидация формы
+ * @param $form данные из формы
+ * @param $rules правила валидации
+ * @param $required массив обязательных полей
+ * @return array массив ошибок
  */
-function form_validation($form, $rules, $required)
-{
+function form_validation($form, $rules, $required) {
     $errors = [];
     foreach ($form as $key => $value) {
         if (in_array($key, $required) && empty($value)) {
@@ -145,6 +140,5 @@ function form_validation($form, $rules, $required)
             }
         }
     }
-
     return $errors;
 }
