@@ -16,9 +16,11 @@ else {
     $ads = get_ads($link);
 }
 
+$menu = include_template('menu.php', [
+    'categories' => $categories]);
 
 $page_content = include_template('add-lot.php', [
-    'categories' => $categories]);
+    'menu' => $menu]);
 
 $errors = [];
 
@@ -28,8 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $ad = $_POST;
     $adf = $_FILES;
-    //var_dump($ad);
-    //var_dump($adf);
 
     $ad = [
         'lot-name' => $_POST['lot-name'],
@@ -68,21 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         },
     ];
 
-
-
-    foreach ($ad as $key => $value) {
-        if (in_array($key, $required_fields) && empty($value)) {
-            $errors[$key] = "Заполните это поле";
-        } elseif (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $validationResult = $rule($value);
-            if ($validationResult) {
-                $errors[$key] = $validationResult;
-            }
-        }
-    }
-
-    $errors = array_filter($errors);
+    $errors = form_validation($ad, $rules, $required_fields);
 
     if (count($errors) <= 0) {
         $file_name = $_FILES['lot-img']['name'];
@@ -106,10 +92,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $page_content = include_template('add-lot.php', [
-        'categories' => $categories,
-        'errors' => $errors]);
+    $menu = include_template('menu.php', [
+        'categories' => $categories]);
 
+    $page_content = include_template('add-lot.php', [
+        'errors' => $errors,
+        '$menu' => $menu]);
 }
 
 $layout_content = include_template('layout.php', [

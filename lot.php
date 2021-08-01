@@ -15,19 +15,27 @@ else {
     $lot_id = filter_input(INPUT_GET, 'id');
     $categories = get_catigories($link);
     if(!$lot_id) {
-        $page_content = include_template('404.php', [
+
+        $menu = include_template('menu.php', [
             'categories' => $categories]);
+
+        $page_content = include_template('404.php', [
+            'menu' => $menu]);
     } else {
         $lots = get_ads($link);
         $lot_in_lots = in_array($lot_id, array_column($lots, 'id'));
         if (!$lot_in_lots) {
-            $page_content = include_template('404.php', [
+            $menu = include_template('menu.php', [
                 'categories' => $categories]);
+            $page_content = include_template('404.php', [
+                'menu' => $menu]);
         } else {
             $lot = get_lot($link, $lot_id);
             $lot['min_price'] = $lot['step_bet'] + $lot['price'];
+            $menu = include_template('menu.php', [
+                'categories' => $categories]);
             $page_content = include_template('lot.php', [
-                'categories' => $categories,
+                'menu' => $menu,
                 'lot' => $lot
             ]);
         }

@@ -29,8 +29,8 @@ function get_data_range($date){
 }
 
 /** Функция проверки, что начальная цена - число больше нуля.
- * @param $value
- * @return string|null
+ * @param $value цена
+ * @return string|null ошибка
  */
 function validate_price($value) {
     if (!is_double($value) || $value <= 0) {
@@ -39,8 +39,8 @@ function validate_price($value) {
 }
 
 /** Функция проверки, что шаг ставки - целое число больше 0.
- * @param $value
- * @return string
+ * @param $value число
+ * @return string ошибка
  */
 function validate_step_rate($value) {
     if (!is_int($value) || $value <= 0) {
@@ -49,46 +49,96 @@ function validate_step_rate($value) {
 }
 
 /** Функция проверки, что переданная дату завершения больше текущей даты на один день.
- * @param $date
- * @return string
+ * @param $date дата
+ * @return string ошибка
  */
-function validate_current_date($date)
-{
-
+function validate_current_date($date){
     if (is_date_valid($date) && get_data_range($date)[0] < "24" || strtotime($date) < strtotime("today")) {
         return "Дата должна быть больше текущей даты хотя бы на 1 день.";
     }
 }
 
 /** Функция проверки выбрана ли категория лота из списка.
- * @param $id
- * @param $category_list
- * @return string
+ * @param $id id выбранной категории
+ * @param $category массмв категорий
+ * @return string ошибка
  */
-function validate_category_id($id, $category)
-{
+function validate_category_id($id, $category){
     if (!in_array($id, $category)) {
         return "Выберите категорию из списка";
     }
 }
 
 /** Проверяет расширение загруженного файла.
- * @param $file
- * @return string
+ * @param $file загруженный файл
+ * @return string ошибка
  */
 function validate_file($file) {
+    $info = new SplFileInfo($file['name']);
+    $info_file = mb_strtolower($info->getExtension());
 
-    $mimetype = mime_content_type($file['tmp_name']);
-    if (!(in_array($mimetype, ['image/jpeg', 'image/png']))) {
+    if (!in_array($info_file, ['jpeg', 'jpg', 'png'])) {
         return $errors['lot-img'] = 'Загрузите картинку в формате JPG, JPEG или PNG';
+    } else {
+        $mimetype = mime_content_type($file['tmp_name']);
+        if (!(in_array($mimetype, ['image/jpeg', 'image/png']))) {
+            return $errors['lot-img'] = 'Загрузите картинку в формате JPG, JPEG или PNG';
+        }
     }
+
+
 }
 
 /**
  * @param string $value значение глобального супермассива POST по ключу
  * @return string если true - возвращает значение глобального массива Post по ключу. если false - пустую строку
  */
-function get_post_val($name)
-{
+function get_post_val($name) {
     return filter_input(INPUT_POST, $name);
+}
+
+/** Функция проверки email
+ * @param $value введенный email
+ * @param $link подключение к бд
+ * @return string ошибка
+ */
+function validate_email ($value, $link) {
+    if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        return $errors['email'] = "Введите корректный email";
+    } else {
+        $sql = 'SELECT id
+                FROM users
+                WHERE email = ?';
+
+        $stmt = db_get_prepare_stmt($link, $sql, [$value]);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $user_id = mysqli_fetch_assoc($res);
+
+        if ($user_id > 0) {
+            return $errors['email'] = "Пользователь с этим email уже зарегистрирован";
+        }
+    }
+}
+
+/** Функция валидация формы
+ * @param $form данные из формы
+ * @param $rules правила валидации
+ * @param $required массив обязательных полей
+ * @return array массив ошибок
+ */
+function form_validation($form, $rules, $required) {
+    $errors = [];
+    foreach ($form as $key => $value) {
+        if (in_array($key, $required) && empty($value)) {
+            $errors[$key] = "Заполните это поле";
+        } elseif (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $validationResult = $rule($value);
+            if ($validationResult) {
+                $errors[$key] = $validationResult;
+            }
+        }
+    }
+    return $errors;
 }
