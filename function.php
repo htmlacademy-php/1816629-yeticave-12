@@ -121,6 +121,17 @@ function validate_email ($value, $link) {
     }
 }
 
+/** Функция проверки email
+ * @param $value введенный email
+ * @param $link подключение к бд
+ * @return string ошибка
+ */
+function validate_email_login ($value) {
+    if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        return $errors['email'] = "Введите корректный email";
+    }
+}
+
 /** Функция валидация формы
  * @param $form данные из формы
  * @param $rules правила валидации

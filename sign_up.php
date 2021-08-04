@@ -6,6 +6,10 @@ require_once 'data.php';
 require_once 'init.php';
 require_once 'models.php';
 
+if (isset($_SESSION['user'])) {
+    http_response_code(403);
+    die();
+}
 
 if (!$link) {
     $error = mysqli_connect_error($link);
