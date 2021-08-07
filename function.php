@@ -105,19 +105,30 @@ function get_post_val($name) {
 function validate_email ($value, $link) {
     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
         return $errors['email'] = "Введите корректный email";
-    } else {
-        $sql = 'SELECT id
-                FROM users
-                WHERE email = ?';
+    }
+    $sql = 'SELECT id
+            FROM users
+            WHERE email = ?
+            LIMIT 1';
 
-        $stmt = db_get_prepare_stmt($link, $sql, [$value]);
-        mysqli_stmt_execute($stmt);
-        $res = mysqli_stmt_get_result($stmt);
-        $user_id = mysqli_fetch_assoc($res);
+    $stmt = db_get_prepare_stmt($link, $sql, [$value]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $user_id = mysqli_fetch_assoc($res);
 
-        if ($user_id > 0) {
-            return $errors['email'] = "Пользователь с этим email уже зарегистрирован";
-        }
+    if ($user_id > 0) {
+        return $errors['email'] = "Пользователь с этим email уже зарегистрирован";
+    }
+}
+
+/** Функция проверки email
+ * @param $value введенный email
+ * @param $link подключение к бд
+ * @return string ошибка
+ */
+function validate_email_login ($value) {
+    if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        return $errors['email'] = "Введите корректный email";
     }
 }
 
