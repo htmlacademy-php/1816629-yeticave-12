@@ -129,7 +129,7 @@ function validate_email ($value, $link) {
 function validate_email_login ($value) {
     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
         return $errors['email'] = "Введите корректный email";
-    }
+    } return null;
 }
 
 /** Функция валидация формы

@@ -17,7 +17,7 @@ else {
 
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form_login = $_POST;
 
     $required_fields = [
