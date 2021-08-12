@@ -19,16 +19,16 @@
                 <div class="lot-item__cost-state">
                     <div class="lot-item__rate">
                         <span class="lot-item__amount">Текущая цена</span>
-                        <span class="lot-item__cost"><?= price_format($lot['price']); ?></span>
+                        <span class="lot-item__cost"><?= price_format($now_price); ?></span>
                     </div>
                     <div class="lot-item__min-cost">
-                        Мин. ставка <span><?= price_format($lot['min_price']); ?></span>
+                        Мин. ставка <span><?= price_format($min_price); ?></span>
                     </div>
                 </div>
-                <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
+                <form class="lot-item__form" action="/lot.php" method="post" autocomplete="off">
                     <p class="lot-item__form-item form__item form__item--invalid">
                         <label for="cost">Ваша ставка</label>
-                        <input id="cost" type="text" name="cost" placeholder="<?= price_format($lot['min_price']); ?>">
+                        <input id="cost" type="text" name="cost" placeholder="<?= price_format($min_price); ?>">
                         <span class="form__error">Введите наименование лота</span>
                     </p>
                     <button type="submit" class="button">Сделать ставку</button>

@@ -151,3 +151,16 @@ function form_validation($form, $rules, $required) {
     }
     return $errors;
 }
+
+/**
+ * Функция проверки ставки
+ * @param $value значение поля
+ * @param $min_price минимальная возможная ставка
+ * @return string ошибка
+ */
+
+function validate_bet_add($value, $min_price) {
+    if (!is_int($value) || $value < $min_price) {
+        return 'Введите целое число, которое больше либо равно минимальной ставке';
+    } return null;
+}

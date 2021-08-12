@@ -52,12 +52,11 @@ WHERE MATCH(name, description) AGAINST(?)
 
 
 function get_lot ($link, $lot_id) {
-    $sql_lot = 'SELECT a.*, c.name AS categories, IFNULL((SELECT price as max_bet
-FROM bets
-WHERE ad_id = a.id
-ORDER BY price DESC
-    LIMIT 1
-    ), a.start_price) AS price
+    $sql_lot = 'SELECT a.*, c.name AS categories, (SELECT price
+                                   FROM bets
+                                   WHERE ad_id = a.id
+                                   ORDER BY price DESC
+                                   LIMIT 1) as max_bet
 FROM ads AS a
          INNER JOIN categories AS c ON c.id = a.category_id
 WHERE a.id = ?';
