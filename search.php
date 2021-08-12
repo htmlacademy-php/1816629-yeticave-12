@@ -41,7 +41,7 @@ $page_content = include_template('search.php', [
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'categories' => $categories,
-    'title' => 'Главная',
+    'title' => 'Поиск',
     'user_name' => $user_name,
     'is_auth' => $is_auth
 ]);

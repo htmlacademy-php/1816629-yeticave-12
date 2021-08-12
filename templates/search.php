@@ -25,11 +25,9 @@
                 </li>
             <?php endforeach; ?>
         </ul>
-        <?php
-            else:
-            echo "Ничего не найдено по вашему запросу";
-            endif;
-            ?>
+        <?php else: ?>
+            <p>Ничего не найдено по вашему запросу</p>
+        <?php endif; ?>
 
     </section>
     <?php if ($pages_count > 1): ?>
