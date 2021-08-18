@@ -25,11 +25,13 @@
                         Мин. ставка <span><?= price_format($min_price); ?></span>
                     </div>
                 </div>
-                <form class="lot-item__form" action="/lot.php" method="post" autocomplete="off">
+                <form class="lot-item__form" action="lot.php?id=<?= $lot['id'] ?>" method="post" autocomplete="off">
                     <p class="lot-item__form-item form__item form__item--invalid">
                         <label for="cost">Ваша ставка</label>
                         <input id="cost" type="text" name="cost" placeholder="<?= price_format($min_price); ?>">
-                        <span class="form__error">Введите наименование лота</span>
+                        <?php if (!empty($errors['cost'])): ?>
+                            <span class="form__error"><?= $errors['cost']; ?></span>
+                        <?php endif; ?>
                     </p>
                     <button type="submit" class="button">Сделать ставку</button>
                 </form>

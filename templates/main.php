@@ -21,7 +21,7 @@
                     <img src="<?=$ad['img']; ?>" width="350" height="260" alt="">
                 </div>
                 <div class="lot__info">
-                    <span class="lot__category"><?= htmlspecialchars($ad['category_id']); ?></span>
+                    <span class="lot__category"><?= get_name_from_id($categories, $ad['category_id']); ?></span>
                     <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?= $ad['id']; ?>"><?= htmlspecialchars($ad['name']); ?></a></h3>
                     <div class="lot__state">
                         <div class="lot__rate">

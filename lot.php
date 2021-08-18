@@ -45,8 +45,13 @@ else {
             $errors = [];
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $form_add_bet = $_POST;
 
+                if (!isset($_SESSION['user'])) {
+                    header("Location: lot.php?id=" . $lot_id);
+                    die();
+                }
+
+                $form_add_bet = $_POST;
                 $required_fields = [
                     'cost'
                 ];
@@ -59,6 +64,7 @@ else {
 
                 $errors = form_validation($form_add_bet, $rules, $required_fields);
 
+
                 if (!$errors) {
                     $sql = 'INSERT INTO bets (date, price, user_id, ad_id) VALUES (NOW(), ?, ?, ?)';
                     $stmt = db_get_prepare_stmt($link, $sql, $data = [$form_add_bet['cost'], $_SESSION['user']['id'], $lot_id]);
@@ -68,22 +74,20 @@ else {
                         header("Location: lot.php?id=" . $lot_id);
                         die();
                     }
-                } else {
-                    $page_content = include_template('lot.php', [
-                        'menu' => $menu,
-                        'lot' => $lot,
-                        'now_price' => $now_price,
-                        'errors' => $errors,
-                        'min_price' => $min_price
-
-                    ]);
                 }
-
             }
         }
     }
 }
 
+$page_content = include_template('lot.php', [
+    'menu' => $menu,
+    'lot' => $lot,
+    'now_price' => $now_price,
+    'errors' => $errors,
+    'min_price' => $min_price
+
+]);
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,

@@ -78,3 +78,27 @@ WHERE MATCH(name, description) AGAINST(?)';
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_assoc($res);
 }
+
+function get_my_bets ($link, $user_id) {
+    $sql = 'SELECT DISTINCT
+    a.id,
+    a.name,
+    a.img,
+    u.contacts,
+    a.category_id,
+    a.date_end,
+    b.user_id,
+    a.winner_id,
+    (SELECT MAX(b.price) FROM bets b WHERE b.ad_id = a.id) max_price,
+    (SELECT MAX(b.date) FROM bets b WHERE b.ad_id = a.id) latest_date
+FROM ads a
+         JOIN bets b ON a.id = b.ad_id
+         JOIN users u ON a.user_id = u.id
+WHERE b.user_id = ?
+ORDER BY latest_date DESC';
+
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}

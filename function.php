@@ -160,7 +160,11 @@ function form_validation($form, $rules, $required) {
  */
 
 function validate_bet_add($value, $min_price) {
-    if (!is_int($value) || $value < $min_price) {
+    if ($value < $min_price) {
         return 'Введите целое число, которое больше либо равно минимальной ставке';
     } return null;
+}
+
+function get_name_from_id($categories, $id) {
+    return array_column($categories, 'name', 'id')[$id];
 }
