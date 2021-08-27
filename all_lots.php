@@ -3,39 +3,38 @@
 require_once 'helpers.php';
 require_once 'function.php';
 require_once 'data.php';
-
 require_once 'init.php';
 require_once 'models.php';
 
+$menu = true;
 
-if (!$link) {
-    $error = mysqli_connect_error($link);
-    $content = include_template('error.php', ['error' => $error]);
+$category_get = filter_input(INPUT_GET, 'category_name');
+
+if (!$category_get) {
+    $page_content = include_template(
+        '404.php'
+    );
 } else {
-    $categories = get_catigories($link);
-    $ads = get_ads($link);
-}
+    $category_id = get_id_from_name($categories, $category_get);
 
-$search_get = filter_input(INPUT_GET, 'search');
 
-if ($search_get) {
-    $search = trim($search_get);
+    $category = trim($category_get);
     $cur_page = filter_input(INPUT_GET, 'page') ?? 1;
-    $page_items = 2;
-    $items_count = get_count_ads($link, $search);
+    $page_items = 6;
+    $items_count = get_count_ads_category($link, $category_id);
     $pages_count = ceil($items_count['cnt'] / $page_items);
     $offset = ($cur_page - 1) * $page_items;
     $pages = range(1, $pages_count);
-    $ads = get_ads_search($link, $search, $page_items, $offset);
+    $ads = get_ads_category($link, $category_id, $page_items, $offset);
 }
 
-
 $page_content = include_template(
-    'search.php',
+    'all_lots.php',
     [
-        'categories' => $categories,
         'ads' => $ads,
-        'search' => $search,
+        'category_id' => $category_id,
+        'category' => $category,
+        'categories' => $categories,
         'pages_count' => $pages_count,
         'pages' => $pages,
         'cur_page' => $cur_page
@@ -47,9 +46,8 @@ $layout_content = include_template(
     [
         'content' => $page_content,
         'categories' => $categories,
-        'title' => 'Поиск',
-        'user_name' => $user_name,
-        'is_auth' => $is_auth
+        'title' => 'Лоты категории',
+        'menu' => $menu,
     ]
 );
 

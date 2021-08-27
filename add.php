@@ -1,4 +1,5 @@
 <?php
+
 require_once 'helpers.php';
 require_once 'function.php';
 require_once 'data.php';
@@ -6,30 +7,39 @@ require_once 'data.php';
 require_once 'init.php';
 require_once 'models.php';
 
+$ads = get_ads($link);
+$menu = true;
+
 if (!isset($_SESSION['user'])) {
-    http_response_code(403);
+    $message = 'Необходимо <a href="/login.php">войти</a>.';
+    $page_content = include_template(
+        '403.php',
+        [
+            'message' => $message,
+        ]
+    );
+    $layout_content = include_template(
+        'layout.php',
+        [
+            'content' => $page_content,
+            'categories' => $categories,
+            'title' => 'Добавление лота',
+            'menu' => $menu,
+        ]
+    );
+
+    print($layout_content);
     die();
 }
 
-if (!$link) {
-    $error = mysqli_connect_error($link);
-    $content = include_template('error.php', ['error' => $error]);
-}
-else {
-    $categories = get_catigories($link);
-    $ads = get_ads($link);
-}
 
-$menu = include_template('menu.php', [
-    'categories' => $categories]);
-
-$page_content = include_template('add-lot.php', [
-    'menu' => $menu]);
+$page_content = include_template(
+    'add-lot.php'
+);
 
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cats_ids = array_column($categories, 'id');
 
     $ad = $_POST;
@@ -96,20 +106,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $menu = include_template('menu.php', [
-        'categories' => $categories]);
-
-    $page_content = include_template('add-lot.php', [
-        'errors' => $errors,
-        '$menu' => $menu]);
+    $page_content = include_template(
+        'add-lot.php',
+        [
+            'errors' => $errors,
+        ]
+    );
 }
 
-$layout_content = include_template('layout.php', [
-    'content' => $page_content,
-    'categories' => $categories,
-    'title' => 'Добавление лота',
-    'user_name' => $user_name,
-    'is_auth' => $is_auth
-]);
+$layout_content = include_template(
+    'layout.php',
+    [
+        'content' => $page_content,
+        'categories' => $categories,
+        'title' => 'Добавление лота',
+        'menu' => $menu,
+    ]
+);
 
 print($layout_content);

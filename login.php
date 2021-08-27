@@ -1,4 +1,5 @@
 <?php
+
 require_once 'helpers.php';
 require_once 'function.php';
 require_once 'data.php';
@@ -6,14 +7,7 @@ require_once 'data.php';
 require_once 'init.php';
 require_once 'models.php';
 
-
-if (!$link) {
-    $error = mysqli_connect_error($link);
-    $content = include_template('error.php', ['error' => $error]);
-}
-else {
-    $categories = get_catigories($link);
-}
+$menu = true;
 
 $errors = [];
 
@@ -26,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
     $rules = [
-        'email' => function ($value)  {
+        'email' => function ($value) {
             return validate_email_login($value);
         }
     ];
@@ -55,25 +49,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $errors['email'] = 'Такой пользователь не найден';
         }
-
     }
 }
 
 
+$page_content = include_template(
+    'login.php',
+    [
+        'errors' => $errors
+    ]
+);
 
-$menu = include_template('menu.php', [
-    'categories' => $categories]);
-
-$page_content = include_template('login.php', [
-    'menu' => $menu,
-    'errors' => $errors]);
-
-$layout_content = include_template('layout.php', [
-    'content' => $page_content,
-    'categories' => $categories,
-    'title' => 'Главная',
-    'user_name' => $user_name,
-    'is_auth' => $is_auth
-]);
+$layout_content = include_template(
+    'layout.php',
+    [
+        'content' => $page_content,
+        'categories' => $categories,
+        'title' => 'Вход на сайт',
+        'menu' => $menu,
+    ]
+);
 
 print($layout_content);

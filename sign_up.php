@@ -1,4 +1,5 @@
 <?php
+
 require_once 'helpers.php';
 require_once 'function.php';
 require_once 'data.php';
@@ -6,18 +7,30 @@ require_once 'data.php';
 require_once 'init.php';
 require_once 'models.php';
 
+$menu = true;
+
 if (isset($_SESSION['user'])) {
-    http_response_code(403);
+    $message = 'Вы уже зарегистрированы и вошли на сайт.';
+    $page_content = include_template(
+        '403.php',
+        [
+            'message' => $message,
+        ]
+    );
+    $layout_content = include_template(
+        'layout.php',
+        [
+            'content' => $page_content,
+            'categories' => $categories,
+            'title' => 'Регистрация',
+            'menu' => $menu,
+        ]
+    );
+
+    print($layout_content);
     die();
 }
 
-if (!$link) {
-    $error = mysqli_connect_error($link);
-    $content = include_template('error.php', ['error' => $error]);
-}
-else {
-    $categories = get_catigories($link);
-}
 
 $errors = [];
 
@@ -44,28 +57,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $sql = 'INSERT INTO users (date_registration, email, password, name, contacts) VALUES (NOW(), ?, ?, ?, ?)';
 
-        $stmt = db_get_prepare_stmt($link, $sql, [$form_sign_up['email'], $password, $form_sign_up['name'], $form_sign_up['message']]);
+        $stmt = db_get_prepare_stmt(
+            $link,
+            $sql,
+            [$form_sign_up['email'], $password, $form_sign_up['name'], $form_sign_up['message']]
+        );
         $res = mysqli_stmt_execute($stmt);
 
-       header("Location: /login.php");
-       die();
+        header("Location: /login.php");
+        die();
     }
-
 }
 
-$menu = include_template('menu.php', [
-    'categories' => $categories]);
 
-$page_content = include_template('sign_up.php', [
-    'menu' => $menu,
-    'errors' => $errors]);
+$page_content = include_template(
+    'sign_up.php',
+    [
+        'errors' => $errors
+    ]
+);
 
-$layout_content = include_template('layout.php', [
-    'content' => $page_content,
-    'categories' => $categories,
-    'title' => 'Главная',
-    'user_name' => $user_name,
-    'is_auth' => $is_auth
-]);
+$layout_content = include_template(
+    'layout.php',
+    [
+        'content' => $page_content,
+        'categories' => $categories,
+        'title' => 'Регистрация',
+        'menu' => $menu,
+    ]
+);
 
 print($layout_content);
