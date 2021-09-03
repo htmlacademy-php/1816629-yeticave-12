@@ -34,7 +34,7 @@ function get_data_range($date){
  */
 function validate_price($value) {
     if (!is_double($value) || $value <= 0) {
-        return "Начальная цена должна больше 0";
+        return 'Начальная цена должна больше 0';
     }
 }
 
@@ -44,7 +44,7 @@ function validate_price($value) {
  */
 function validate_step_rate($value) {
     if (!is_int($value) || $value <= 0) {
-        return "Шаг ставки должен быть целым числом больше 0";
+        return 'Шаг ставки должен быть целым числом больше 0';
     }
 }
 
@@ -54,7 +54,7 @@ function validate_step_rate($value) {
  */
 function validate_current_date($date){
     if (is_date_valid($date) && get_data_range($date)[0] < "24" || strtotime($date) < strtotime("today")) {
-        return "Дата должна быть больше текущей даты хотя бы на 1 день.";
+        return 'Дата должна быть больше текущей даты хотя бы на 1 день.';
     }
 }
 
@@ -65,7 +65,7 @@ function validate_current_date($date){
  */
 function validate_category_id($id, $category){
     if (!in_array($id, $category)) {
-        return "Выберите категорию из списка";
+        return 'Выберите категорию из списка';
     }
 }
 
@@ -78,15 +78,13 @@ function validate_file($file) {
     $info_file = mb_strtolower($info->getExtension());
 
     if (!in_array($info_file, ['jpeg', 'jpg', 'png'])) {
-        return $errors['lot-img'] = 'Загрузите картинку в формате JPG, JPEG или PNG';
+        return 'Загрузите картинку в формате JPG, JPEG или PNG';
     } else {
         $mimetype = mime_content_type($file['tmp_name']);
         if (!(in_array($mimetype, ['image/jpeg', 'image/png']))) {
-            return $errors['lot-img'] = 'Загрузите картинку в формате JPG, JPEG или PNG';
+            return 'Загрузите картинку в формате JPG, JPEG или PNG';
         }
     }
-
-
 }
 
 /**
@@ -102,9 +100,9 @@ function get_post_val($name) {
  * @param $link подключение к бд
  * @return string ошибка
  */
-function validate_email ($value, $link) {
+function validate_email($value, $link) {
     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-        return $errors['email'] = "Введите корректный email";
+        return 'Введите корректный email';
     }
     $sql = 'SELECT id
             FROM users
@@ -117,7 +115,7 @@ function validate_email ($value, $link) {
     $user_id = mysqli_fetch_assoc($res);
 
     if ($user_id > 0) {
-        return $errors['email'] = "Пользователь с этим email уже зарегистрирован";
+        return 'Пользователь с этим email уже зарегистрирован';
     }
 }
 
@@ -126,9 +124,9 @@ function validate_email ($value, $link) {
  * @param $link подключение к бд
  * @return string ошибка
  */
-function validate_email_login ($value) {
+function validate_email_login($value) {
     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-        return $errors['email'] = "Введите корректный email";
+        return 'Введите корректный email';
     } return null;
 }
 
@@ -142,7 +140,7 @@ function form_validation($form, $rules, $required) {
     $errors = [];
     foreach ($form as $key => $value) {
         if (in_array($key, $required) && empty($value)) {
-            $errors[$key] = "Заполните это поле";
+            $errors[$key] = 'Заполните это поле';
         } elseif (isset($rules[$key])) {
             $rule = $rules[$key];
             $validationResult = $rule($value);
@@ -152,4 +150,25 @@ function form_validation($form, $rules, $required) {
         }
     }
     return $errors;
+}
+
+/**
+ * Функция проверки ставки
+ * @param $value значение поля
+ * @param $min_price минимальная возможная ставка
+ * @return string ошибка
+ */
+
+function validate_bet_add($value, $min_price) {
+    if ($value < $min_price) {
+        return 'Введите целое число, которое больше либо равно минимальной ставке';
+    } return null;
+}
+
+function get_name_from_id($categories, $id) {
+    return array_column($categories, 'name', 'id')[$id];
+}
+
+function get_id_from_name($categories, $code) {
+    return array_column($categories, 'id', 'code')[$code];
 }
