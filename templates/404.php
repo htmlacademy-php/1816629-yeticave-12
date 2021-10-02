@@ -1,6 +1,6 @@
 <?php
 
-http_response_code(404);
+ http_response_code(404);
 ?>
 <section class="lot-item container">
     <h2>404 Страница не найдена</h2>

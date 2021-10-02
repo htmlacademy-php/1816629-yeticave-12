@@ -5,6 +5,7 @@ require_once 'function.php';
 require_once 'data.php';
 require_once 'init.php';
 require_once 'models.php';
+require_once 'getwinner.php';
 
 $ads = get_ads($link);
 
