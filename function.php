@@ -172,3 +172,4 @@ function get_name_from_id($categories, $id) {
 function get_id_from_name($categories, $code) {
     return array_column($categories, 'id', 'code')[$code];
 }
+

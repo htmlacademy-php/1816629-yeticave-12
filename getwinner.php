@@ -1,25 +1,30 @@
 <?php
-require_once'vendor/autoload.php';
+require_once 'vendor/autoload.php';
 require_once 'models.php';
+require_once 'config/email.php';
 
-$lotsWithoutWinner = get_winners($link);
+$lots_without_winner = get_winners($link);
 
-if ($lotsWithoutWinner) {
 
-    foreach ($lotsWithoutWinner as $lot) {
-        updateWinner($link, $lot['id'], $lot['last_bet_user']);
+if ($lots_without_winner) {
+    foreach ($lots_without_winner as $lot) {
+        update_winner($link, $lot['last_bet_user'], $lot['id']);
+        $transport = new Swift_SmtpTransport($email['smtp_host'], $email['smtp_port']);
+        $transport->setUsername($email['username']);
+        $transport->setPassword($email['password']);
+
+        $winner = get_user_by_id($link, $lot['last_bet_user']);
+
+        $mailer = new Swift_Mailer($transport);
+
+        $message = new Swift_Message();
+        $message->setSubject("Ваша ставка победила");
+        $message->setFrom(['keks@phpdemo.ru' => 'Yeticave']);
+        $message->setTo([$winner['email']]);
+
+        $msg_content = include_template('email.php', ['winner' => $winner, 'lot' => $lot]);
+        $message->setBody($msg_content, 'text/html');
+
+        $result = $mailer->send($message);
     }
-
-    // Конфигурация траспорта
-    $transport = new Swift_SmtpTransport('smtp.example.org', 25);
-
-// Формирование сообщения
-    $message = new Swift_Message("Просмотры вашей гифки");
-    $message->setTo(["keks@htmlacademy.ru" => "Кекс"]);
-    $message->setBody("Вашу гифку «Кот и пылесос» посмотрело больше 1 млн!");
-    $message->setFrom("mail@giftube.academy", "GifTube");
-
-// Отправка сообщения
-    $mailer = new Swift_Mailer($transport);
-    $mailer->send($message);
 }

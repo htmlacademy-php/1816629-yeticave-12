@@ -177,18 +177,37 @@ FROM ads AS a
 WHERE a.winner_id IS NULL
   AND a.date_end  <= NOW()';
 
-    $stmt = db_get_prepare_stmt($link);
+    $stmt = db_get_prepare_stmt($link, $sql);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
+
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
-function updateWinner($link, $winner, $ad) {
+function update_winner($link, $winner, $ad) {
     $sql = 'UPDATE ads
     SET winner_id = ?
     WHERE id = ?';
-    $stmt = db_get_prepare_stmt($link, $data = [$winner, $ad]);
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$winner, $ad]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    return $res;
 }
+
+/**
+ * Возврящает email пользователья по id.
+ * @param mysqli $con Подключение к БД.
+ * @param int $id id пользователя.
+ * @return string Искомый email пользователя.
+ */
+function get_user_by_id($link, $user_id) {
+    $sql = 'SELECT email,
+       name
+FROM users
+WHERE id = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($result);
+}
+
