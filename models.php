@@ -163,3 +163,51 @@ ORDER BY latest_date DESC';
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
+
+function get_winners($link) {
+    $sql = 'SELECT
+    a.id,
+    a.name,
+    a.winner_id,
+    (SELECT MAX(b.price) FROM bets b WHERE b.ad_id = a.id) max_price,
+    b.user_id last_bet_user
+FROM ads AS a
+         JOIN bets b ON a.id = b.ad_id
+         JOIN users u ON b.user_id = u.id
+WHERE a.winner_id IS NULL
+  AND a.date_end  <= NOW()';
+
+    $stmt = db_get_prepare_stmt($link, $sql);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+}
+
+function update_winner($link, $winner, $ad) {
+    $sql = 'UPDATE ads
+    SET winner_id = ?
+    WHERE id = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$winner, $ad]);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    return $res;
+}
+
+/**
+ * Возврящает email пользователья по id.
+ * @param mysqli $con Подключение к БД.
+ * @param int $id id пользователя.
+ * @return string Искомый email пользователя.
+ */
+function get_user_by_id($link, $user_id) {
+    $sql = 'SELECT email,
+       name
+FROM users
+WHERE id = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data = [$user_id]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($result);
+}
+
