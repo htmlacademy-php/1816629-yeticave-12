@@ -2,8 +2,6 @@
 
 require_once 'helpers.php';
 require_once 'function.php';
-require_once 'data.php';
-
 require_once 'init.php';
 require_once 'models.php';
 
@@ -26,7 +24,15 @@ if (!$lot_id) {
         $now_price = ($lot['max_bet']) ? $lot['max_bet'] : $lot['start_price'];
         $min_price = $lot['step_bet'] + $now_price;
         $bets = get_bets($link, $lot_id);
+        if (isset($_SESSION['user'])) {
+            $user_id = $_SESSION['user']['id'];
+        }
 
+        $created_by_current_user = ($user_id ?? 0) == $lot['user_id'];
+
+        $last_bet_by_current_user = ($user_id ?? 0) == ($bets[0]['user_id'] ?? 0);
+
+        $show_bet_form = ($user_id ?? 0) && !$created_by_current_user && !$last_bet_by_current_user;
 
         $page_content = include_template(
             'lot.php',
@@ -34,7 +40,8 @@ if (!$lot_id) {
                 'lot' => $lot,
                 'now_price' => $now_price,
                 'min_price' => $min_price,
-                'bets' => $bets
+                'bets' => $bets,
+                'show_bet_form' => $show_bet_form,
             ]
         );
 
@@ -83,7 +90,8 @@ if (!$lot_id) {
                 'now_price' => $now_price,
                 'errors' => $errors,
                 'min_price' => $min_price,
-                'bets' => $bets
+                'bets' => $bets,
+                'show_bet_form' => $show_bet_form,
 
             ]
         );

@@ -2,7 +2,7 @@
 
 /**
  * Функция получения из БД массива категорий
- * @param $link подключение к БД
+ * @param mysqli $link подключение к БД
  * @return array массив категорий
  */
 function get_catigories($link)
@@ -14,12 +14,9 @@ function get_catigories($link)
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
-;
-
-
 /**
  * Функция получения из БД массива актуальных объявлений
- * @param $link подключение к БД
+ * @param mysqli $link подключение к БД
  * @return array массив актуальных объявлений
  */
 function get_ads($link)
@@ -37,7 +34,7 @@ FROM ads AS a
 
 /**
  * Функция получения из БД массива актуальных объявлений
- * @param $link подключение к БД
+ * @param mysqli $link подключение к БД
  * @return array массив актуальных объявлений
  */
 function get_ads_category($link, $category_id, $page_items, $offset)
@@ -58,7 +55,7 @@ AND a.category_id = ?
 
 /**
  * Функция получения из БД массива актуальных объявлений для поиска
- * @param $link подключение к БД
+ * @param mysqli $link подключение к БД
  * @return array массив актуальных объявлений
  */
 function get_ads_search($link, $search, $page_items, $offset)
@@ -76,7 +73,12 @@ WHERE MATCH(name, description) AGAINST(?)
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
-
+/**
+ * Функция получения информация о лоте
+ * @param mysqli $link  подключение к БД
+ * @param int $lot_id id лота
+ * @return array массив с данными лота
+ */
 function get_lot($link, $lot_id)
 {
     $sql_lot = 'SELECT a.*, c.name AS categories, (SELECT price
@@ -94,20 +96,28 @@ WHERE a.id = ?';
     return mysqli_fetch_assoc($res);
 }
 
-
+/**
+ * Функция получения количества лотов
+ * @param mysqli $link  подключение к БД
+ * @param string $search поисковый запрос
+ * @return int количество найденых лотов
+ */
 function get_count_ads($link, $search)
 {
     $sql = 'SELECT COUNT(*) as cnt FROM ads
-
 WHERE MATCH(name, description) AGAINST(?)';
-
     $stmt = db_get_prepare_stmt($link, $sql, $data = [$search]);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_assoc($res);
 }
 
-
+/**
+ * Функция получения количества лотов в категории
+ * @param mysqli $link  подключение к БД
+ * @param int $category_id id категории
+ * @return int количество лотов
+ */
 function get_count_ads_category($link, $category_id)
 {
     $sql = 'SELECT COUNT(*) as cnt FROM ads AS a
@@ -120,6 +130,12 @@ AND a.category_id = ?';
     return mysqli_fetch_assoc($res);
 }
 
+/**
+ * Функция получения ставок лота
+ * @param mysqli $link  подключение к БД
+ * @param int $ad_id id объявления
+ * @return array массив ставок
+ */
 function get_bets($link, $ad_id)
 {
     $sql = 'SELECT
@@ -139,6 +155,13 @@ WHERE ad_id = ?';
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
+
+/**
+ * Функция получения ставок пользователя
+ * @param mysqli $link  подключение к БД
+ * @param int $user_id id пользователя
+ * @return array массив ставок
+ */
 function get_my_bets($link, $user_id)
 {
     $sql = 'SELECT DISTINCT
@@ -164,6 +187,11 @@ ORDER BY latest_date DESC';
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
+/**
+ * Функция получения объявления для определения победителей
+ * @param mysqli $link  подключение к БД
+ * @return array массив объявлений
+ */
 function get_winners($link) {
     $sql = 'SELECT
     a.id,
@@ -184,6 +212,14 @@ WHERE a.winner_id IS NULL
     return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 
+
+/**
+ * Функция обновления объявления для записи победителя
+ * @param mysqli $link  подключение к БД
+ * @param int $winner id победителя
+ * @param int $ad объявления
+ * @return false|mysqli_result
+ */
 function update_winner($link, $winner, $ad) {
     $sql = 'UPDATE ads
     SET winner_id = ?
@@ -196,9 +232,9 @@ function update_winner($link, $winner, $ad) {
 
 /**
  * Возврящает email пользователья по id.
- * @param mysqli $con Подключение к БД.
+ * @param mysqli $link Подключение к БД.
  * @param int $id id пользователя.
- * @return string Искомый email пользователя.
+ * @return string email пользователя.
  */
 function get_user_by_id($link, $user_id) {
     $sql = 'SELECT email,
@@ -210,4 +246,6 @@ WHERE id = ?';
     $result = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_assoc($result);
 }
+
+
 

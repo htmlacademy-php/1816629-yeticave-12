@@ -26,6 +26,7 @@
                             Мин. ставка <span><?= price_format($min_price); ?></span>
                         </div>
                     </div>
+                    <?php if($show_bet_form): ?>
                     <form class="lot-item__form" action="lot.php?id=<?= $lot['id'] ?>" method="post" autocomplete="off">
                         <p class="lot-item__form-item form__item form__item--invalid">
                             <label for="cost">Ваша ставка</label>
@@ -38,6 +39,7 @@
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
                     </form>
+                    <?php endif; ?>
                 </div>
             <?php
             endif; ?>

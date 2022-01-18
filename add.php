@@ -1,9 +1,6 @@
 <?php
 
 require_once 'helpers.php';
-require_once 'function.php';
-require_once 'data.php';
-
 require_once 'init.php';
 require_once 'models.php';
 
@@ -34,7 +31,10 @@ if (!isset($_SESSION['user'])) {
 
 
 $page_content = include_template(
-    'add-lot.php'
+    'add-lot.php',
+    [
+        'categories' => $categories,
+    ]
 );
 
 $errors = [];
@@ -52,7 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'lot-rate' => is_numeric($_POST['lot-rate']) ? floatval($_POST['lot-rate']) : $_POST['lot-rate'],
         'lot-step' => is_numeric($_POST['lot-step']) ? $_POST['lot-step'] + 0 : $_POST['lot-step'],
         'lot-date' => $_POST['lot-date'],
-        'lot-img' => $_FILES['lot-img']
+        'lot-img' => $_FILES['lot-img'],
+        'user-id' => $_SESSION['user']['id']
     ];
 
     $required_fields = [
@@ -92,8 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         move_uploaded_file($tmp_name, $file_path . $file_name);
         $ad['lot-img'] = $file_url;
 
+
         $sql = 'INSERT INTO ads (name, category_id, description, start_price, step_bet, date_end, img, user_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 1)';
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
         $stmt = db_get_prepare_stmt($link, $sql, $ad);
         $res = mysqli_stmt_execute($stmt);
@@ -110,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'add-lot.php',
         [
             'errors' => $errors,
+            'categories' => $categories,
         ]
     );
 }
