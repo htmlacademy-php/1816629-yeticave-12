@@ -2,7 +2,7 @@
 
 /**
  * Функция форматирования суммы и добавления к ней знака рубля
- * @param $number цена
+ * @param int $number цена
  * @return string отформатированная цена со знаком рубля
  */
 function price_format($number) {
@@ -29,7 +29,7 @@ function get_data_range($date){
 }
 
 /** Функция проверки, что начальная цена - число больше нуля.
- * @param $value цена
+ * @param int $value цена
  * @return string|null ошибка
  */
 function validate_price($value) {
@@ -39,7 +39,7 @@ function validate_price($value) {
 }
 
 /** Функция проверки, что шаг ставки - целое число больше 0.
- * @param $value число
+ * @param int $value число
  * @return string ошибка
  */
 function validate_step_rate($value) {
@@ -59,8 +59,8 @@ function validate_current_date($date){
 }
 
 /** Функция проверки выбрана ли категория лота из списка.
- * @param $id id выбранной категории
- * @param $category массмв категорий
+ * @param int $id id выбранной категории
+ * @param arrya $category массм категорий
  * @return string ошибка
  */
 function validate_category_id($id, $category){
@@ -120,8 +120,8 @@ function validate_email($value, $link) {
 }
 
 /** Функция проверки email
- * @param $value введенный email
- * @param $link подключение к бд
+ * @param string $value введенный email
+ * @param mysqli $link подключение к бд
  * @return string ошибка
  */
 function validate_email_login($value) {
@@ -172,4 +172,5 @@ function get_name_from_id($categories, $id) {
 function get_id_from_name($categories, $code) {
     return array_column($categories, 'id', 'code')[$code];
 }
+
 
