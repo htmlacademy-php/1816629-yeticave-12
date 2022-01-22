@@ -13,7 +13,7 @@ function price_format($number) {
 
 /**
  * Функция вычисления количества часов и минут до окончания публикации
- * @param $data дата окончания публикации
+ * @param string $data дата окончания публикации
  * @return array часы и минуты до  окончания публикации
  */
 function get_data_range($date){
@@ -49,7 +49,7 @@ function validate_step_rate($value) {
 }
 
 /** Функция проверки, что переданная дату завершения больше текущей даты на один день.
- * @param $date дата
+ * @param string $date дата
  * @return string ошибка
  */
 function validate_current_date($date){
@@ -60,7 +60,7 @@ function validate_current_date($date){
 
 /** Функция проверки выбрана ли категория лота из списка.
  * @param int $id id выбранной категории
- * @param arrya $category массм категорий
+ * @param array $category массм категорий
  * @return string ошибка
  */
 function validate_category_id($id, $category){
@@ -70,7 +70,7 @@ function validate_category_id($id, $category){
 }
 
 /** Проверяет расширение загруженного файла.
- * @param $file загруженный файл
+ * @param array $file массив переданного изображения.
  * @return string ошибка
  */
 function validate_file($file) {
@@ -96,8 +96,8 @@ function get_post_val($name) {
 }
 
 /** Функция проверки email
- * @param $value введенный email
- * @param $link подключение к бд
+ * @param string $value введенный email
+ * @param mysqli $link подключение к бд
  * @return string ошибка
  */
 function validate_email($value, $link) {
@@ -131,9 +131,9 @@ function validate_email_login($value) {
 }
 
 /** Функция валидация формы
- * @param $form данные из формы
- * @param $rules правила валидации
- * @param $required массив обязательных полей
+ * @param mixed $form данные из формы
+ * @param mixed $rules правила валидации
+ * @param array $required массив обязательных полей
  * @return array массив ошибок
  */
 function form_validation($form, $rules, $required) {
@@ -154,21 +154,32 @@ function form_validation($form, $rules, $required) {
 
 /**
  * Функция проверки ставки
- * @param $value значение поля
- * @param $min_price минимальная возможная ставка
+ * @param int $value значение поля
+ * @param int $min_price минимальная возможная ставка
  * @return string ошибка
  */
-
 function validate_bet_add($value, $min_price) {
     if ($value < $min_price) {
         return 'Введите целое число, которое больше либо равно минимальной ставке';
     } return null;
 }
 
+/**
+ * Функция получения названия категории по id
+ * @param string $categories название категории
+ * @param int $id id категории
+ * @return string название категории
+ */
 function get_name_from_id($categories, $id) {
     return array_column($categories, 'name', 'id')[$id];
 }
 
+/**
+ * Функция получения  id категории по ее коду
+ * @param string $categories название категории
+ * @param string $code код категории
+ * @return int id категории
+ */
 function get_id_from_name($categories, $code) {
     return array_column($categories, 'id', 'code')[$code];
 }
